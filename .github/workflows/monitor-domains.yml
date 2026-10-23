@@ -1,0 +1,40 @@
+name: Monitorar expiração de domínios
+
+on:
+  schedule:
+    # Toda segunda-feira às 08:00 de Brasília (11:00 UTC).
+    - cron: "0 11 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Consultar domínios e enviar relatório
+        env:
+          SMTP_HOST: \${{ secrets.SMTP_HOST }}
+          SMTP_PORT: \${{ secrets.SMTP_PORT }}
+          SMTP_USER: \${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: \${{ secrets.SMTP_PASSWORD }}
+          ALERT_FROM: \${{ secrets.ALERT_FROM }}
+          ALERT_TO: \${{ secrets.ALERT_TO }}
+        run: python monitorar_dominios.py
+      - name: Guardar relatório como artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-dominios
+          path: |
+            relatorio_dominios.csv
+            relatorio_dominios.txt
+          if-no-files-found: ignore
+          retention-days: 30
