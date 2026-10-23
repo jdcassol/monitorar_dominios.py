@@ -231,7 +231,11 @@ def send_email_if_configured(report, csv_path):
     with csv_path.open("rb") as handle:
         message.add_attachment(handle.read(), maintype="text", subtype="csv", filename=csv_path.name)
 
-    raw_port = os.getenv("SMTP_PORT", "587").strip()\n    if not raw_port.isdigit():\n        print(f"AVISO: SMTP_PORT inválido ({raw_port!r}); usando a porta padrão 587.")\n        raw_port = "587"\n    port = int(raw_port)
+    raw_port = os.getenv("SMTP_PORT", "587").strip()
+    if not raw_port.isdigit():
+        print(f"AVISO: SMTP_PORT inválido ({raw_port!r}); usando a porta padrão 587.")
+        raw_port = "587"
+    port = int(raw_port)
     username = os.getenv("SMTP_USER")
     password = os.getenv("SMTP_PASSWORD")
     with smtplib.SMTP(host, port, timeout=20) as server:
