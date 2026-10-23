@@ -2,8 +2,8 @@ name: Monitorar expiração de domínios
 
 on:
   schedule:
-    # Toda segunda-feira às 08:00 de Brasília (11:00 UTC).
-    - cron: "0 11 * * 1"
+    # Dias 1 e 16 de cada mês às 08:00 de Brasília (11:00 UTC), aproximadamente a cada 15 dias.
+    - cron: "0 11 1,16 * *"
   workflow_dispatch:
 
 permissions:
